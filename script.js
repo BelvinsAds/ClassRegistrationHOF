@@ -65,7 +65,6 @@ SelectClassType.addEventListener('change', async (event) => {
     let CountParticipants = `<label class="SpotsCount">${participants.length}/25 Spots Taken</label>`;
     let shownum = document.getElementById('numcount');
     shownum.innerHTML = CountParticipants;
-    console.log(participants.length);
     if(participants.length > 25) {
         alert('Sorry, It Looks Like This Class Is Full');
     } else {
@@ -90,7 +89,6 @@ function snapshotToArray(snapshot) {
 // Sending Email List
 function sendEmailList() {
     var myJSON = JSON.stringify(participants);
-    console.log(myJSON);
     var params = {
         class_name: ClassName,
         message: myJSON,
