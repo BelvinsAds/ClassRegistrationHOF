@@ -27,10 +27,10 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 //Form Values
-
 var ClassType 
 var ClassName
 var ClassNameType
+var ClassDate
 var participants = [];
 var First_Name = document.getElementById("First_Name");
 var Last_Name = document.getElementById("Last_Name");
@@ -45,6 +45,10 @@ function applyForClass(){
         Num: SpotNum
     })
     alert('Your Spot Has Been Reserved');
+if(participants.length >= 1 && participants.length < 2){
+    triggerFunction(targetDate, action)
+}
+
     if(participants.length == 25) {
         sendEmailList();
     }
@@ -55,16 +59,21 @@ SelectClassType.addEventListener('change', async (event) => {
      ClassType = document.getElementById("SelectClassType");
      ClassName = ClassType.value;
      ClassNameType = ClassType.options[ClassType.selectedIndex].text;
+     ClassDate = ClassType.options[ClassType.selectedIndex].id;
+     const enteredDate = ClassDate
+     const targetDate = new Date(ClassDate)
     var deRef = ref(database, `/Classes/${ClassName}/`);
     let participantsCount = 0;
     let i = 0;
     onValue(deRef, (snapshot) => {
     let data = snapshot.val()
     participants = snapshotToArray(snapshot);
+    console.log(ClassDate)
     //Display Number of Participants
     let CountParticipants = `<label class="SpotsCount">${participants.length}/25 Spots Taken</label>`;
     let shownum = document.getElementById('numcount');
     shownum.innerHTML = CountParticipants;
+    console.log(participants.length);
     if(participants.length > 25) {
         alert('Sorry, It Looks Like This Class Is Full');
     } else {
@@ -96,3 +105,21 @@ function sendEmailList() {
     emailjs.send("service_ngjmswq","template_8h8qpbx", params);
 }
 
+//Sending Email List Before Class
+function triggerFunction(targetDate, callback) {
+    const currentDate = new Date();
+    const timeUntilTarget = targetDate.getTime() - currentDate.getTime();
+    if(timeUntilTarget < 0) {
+        alert("Sorry. we ran into an unknown error. Please try again later");
+        return;
+    }
+    setTimeout(callback, timeUntilTarget);
+}
+
+function action() {
+    var params = {
+        class_name: ClassName,
+        message: myJSON,
+    }
+    emailjs.send("service_ngjmswq","template_8h8qpbx", params);
+}
